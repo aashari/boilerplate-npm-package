@@ -1,6 +1,6 @@
 {
   "name": "@aashari/boilerplate-npm-package",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A simple Node.js package that prints 'Hello World'",
   "main": "dist/index.js",
   "repository": {
