@@ -1,0 +1,62 @@
+import { createCli } from './index';
+
+// Mock the Command class
+const versionMock = jest.fn().mockReturnThis();
+
+jest.mock('commander', () => {
+	// Create mock command instance with separate function to avoid initialization issue
+	function createMockCommand() {
+		return {
+			name: jest.fn().mockReturnThis(),
+			description: jest.fn().mockReturnThis(),
+			version: versionMock,
+			command: jest.fn().mockReturnThis(),
+			action: jest.fn().mockReturnThis(),
+			parse: jest.fn()
+		};
+	}
+	
+	// Mock Command constructor
+	return {
+		Command: jest.fn().mockImplementation(() => createMockCommand())
+	};
+});
+
+describe('CLI version handling', () => {
+	let originalEnv: NodeJS.ProcessEnv;
+	
+	beforeEach(() => {
+		// Save original environment
+		originalEnv = { ...process.env };
+		
+		// Reset mock counters
+		versionMock.mockClear();
+	});
+	
+	afterEach(() => {
+		// Restore original environment
+		process.env = originalEnv;
+	});
+	
+	it('should use package version when available', () => {
+		// Set environment variable
+		process.env.npm_package_version = '2.0.0-test';
+		
+		// Create CLI
+		createCli();
+		
+		// Verify version was called with the mocked version
+		expect(versionMock).toHaveBeenCalledWith('2.0.0-test');
+	});
+	
+	it('should fall back to default version when npm_package_version is not available', () => {
+		// Remove npm_package_version from environment
+		delete process.env.npm_package_version;
+		
+		// Create CLI
+		createCli();
+		
+		// Verify version was called with the fallback version
+		expect(versionMock).toHaveBeenCalledWith('1.1.0');
+	});
+});

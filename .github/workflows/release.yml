@@ -37,9 +37,9 @@ jobs:
       - name: Build
         run: npm run build # Compiles TypeScript to JavaScript
         
-      # Step 5: Skip tests temporarily
-      # - name: Verify tests
-      #   run: npm test      # Runs Jest tests
+      # Step 5: Run tests to ensure quality
+      - name: Verify tests
+        run: npm test      # Runs Jest tests
         
       # Step 6: Run semantic-release to analyze commits and publish if needed
       - name: Semantic Release
